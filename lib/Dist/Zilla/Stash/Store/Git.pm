@@ -94,6 +94,9 @@ has _repo => (
     builder         => sub { Git::Wrapper->new(shift->repo_root) },
 );
 
+# FIXME
+has repo_root => (is => 'lazy', builder => sub { '.' });
+
 # XXX
 #has version_regexp => (is => 'rwp', isa=>'Str', lazy => 1, predicate => 1, builder => sub { '^v(.+)$' });
 #has first_version  => (is => 'rwp', isa=>'Str', lazy => 1, predicate => 1, default => sub { '0.001' });
