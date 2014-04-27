@@ -32,8 +32,8 @@ sub default_config {
     my $self = shift @_;
 
     return {
-        version_regexp => '^v(.+)$',
-        first_version  => '0.001',
+        'version.regexp' => '^v(.+)$',
+        'version.first'  => '0.001',
     };
 }
 
@@ -62,6 +62,12 @@ has config => (
         has_config_for => 'exists',
         get_config_for => 'get',
         # ...
+
+        # stopgaps...
+        has_version_regexp => [ exists => 'version.regexp' ],
+        version_regexp     => [ get    => 'version.regexp' ],
+        has_first_version  => [ exists => 'version.first'  ],
+        first_version      => [ get    => 'version.first'  ],
     },
 
     builder => sub {
