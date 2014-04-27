@@ -11,6 +11,7 @@ use version;
 
 use Git::Wrapper;
 use Version::Next;
+use Hash::Merge::Simple 'merge';
 
 with 'Dist::Zilla::Role::Store';
 
@@ -73,8 +74,6 @@ has config => (
     builder => sub {
         my $self = shift @_;
 
-        ...
-
         ### pull in configuration from plugins...
 
         ### pull in static config...
@@ -82,6 +81,9 @@ has config => (
         ### ...and the default config...
 
         ### merge it all..
+        my $config = merge $self->default_config, $self->static_config; # XXX $self->plugin_config
+
+        return $config;
     },
 );
 
