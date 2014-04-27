@@ -1,4 +1,18 @@
+#
+# This file is part of Dist-Zilla-Stash-Store-Git
+#
+# This software is Copyright (c) 2014 by Chris Weyl.
+#
+# This is free software, licensed under:
+#
+#   The GNU Lesser General Public License, Version 2.1, February 1999
+#
 package Dist::Zilla::Stash::Store::Git;
+BEGIN {
+  $Dist::Zilla::Stash::Store::Git::AUTHORITY = 'cpan:RSRCHBOY';
+}
+# git description: cb62a97
+$Dist::Zilla::Stash::Store::Git::VERSION = '0.000001'; # TRIAL
 
 # ABSTRACT: A common place to store and interface with git
 
@@ -165,12 +179,51 @@ sub _XXX_default_next_version {
 
 __PACKAGE__->meta->make_immutable;
 !!42;
+
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=for :stopwords Chris Weyl
+
+=head1 NAME
+
+Dist::Zilla::Stash::Store::Git - A common place to store and interface with git
+
+=head1 VERSION
+
+This document describes version 0.000001 of Dist::Zilla::Stash::Store::Git - released April 27, 2014 as part of Dist-Zilla-Stash-Store-Git.
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-=head1 SEE ALSO
+=head1 SOURCE
+
+The development version is on github at L<http://https://github.com/RsrchBoy/dist-zilla-stash-store-git>
+and may be cloned from L<git://https://github.com/RsrchBoy/dist-zilla-stash-store-git.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+https://github.com/RsrchBoy/dist-zilla-stash-store-git/issues
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 AUTHOR
+
+Chris Weyl <cweyl@alumni.drew.edu>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2014 by Chris Weyl.
+
+This is free software, licensed under:
+
+  The GNU Lesser General Public License, Version 2.1, February 1999
 
 =cut
