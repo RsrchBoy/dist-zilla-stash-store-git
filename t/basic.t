@@ -3,6 +3,9 @@ use warnings;
 
 use Test::More;
 
-fail 'No tests!';
+TODO: {
+    local $TODO = q{did I mention it's early yet?};
+    fail 'No tests!';
+}
 
 done_testing;
