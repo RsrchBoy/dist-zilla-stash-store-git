@@ -9,7 +9,7 @@ use MooseX::AttributeShortcuts;
 has _git_store => (
     is              => 'lazy',
     isa_instance_of => 'Dist::Zilla::Stash::Store::Git',
-    builder         => sub { shift->_zilla->get_stash_named('%Store::Git') },
+    builder         => sub { shift->zilla->stash_named('%Store::Git') },
 );
 
 !!42;
