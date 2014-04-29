@@ -54,6 +54,44 @@ sub default_config {
     };
 }
 
+=attr plugin_config
+
+This attribute contains all the configuration information provided to the
+store by the plugins performing the
+L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>.
+Any values specified herein override those in the L</default_config>, and
+anything set by the store configuration (aka L</store_config>) similarly
+overrides anything here.
+
+=method plugin_config
+
+A read-only accessor to the plugin_config attribute.
+
+=method has_plugin_config
+
+True if we have been provided any plugin configuration.
+
+=method has_plugin_config_for
+
+True if plugin configuration has been provided for a given key, e.g.
+
+    do { ... } if $store->has_plugin_config_for('version.first');
+
+=cut
+
+has plugin_config => (
+    traits  => [ 'Hash' ],
+    is      => 'lazy',
+    isa     => 'HashRef',
+    builder => sub { { } },
+    handles => {
+        has_plugin_config     => 'count',
+        has_no_plugin_config  => 'is_empty', # XXX ?
+        has_plugin_config_for => 'exists',
+        # ...
+    },
+);
+
 =attr static_config
 
 This attribute contains all the information passed to the store via the
