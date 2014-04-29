@@ -51,6 +51,7 @@ sub default_config {
     return {
         'version.regexp' => '^v(.+)$',
         'version.first'  => '0.001',
+        'version.next'   => $self->_default_next_version,
     };
 }
 
@@ -65,17 +66,21 @@ overrides anything here.
 
 =method dynamic_config
 
-A read-only accessor to the dynamic_config attribute.
+This is a read-only accessor to the L</dynamic_config> attribute.
 
 =method has_dynamic_config
 
-True if we have been provided any plugin configuration.
+True if we have been provided any configuration by plugins.
+
+This is a read-only accessor to the L</dynamic_config> attribute.
 
 =method has_dynamic_config_for
 
 True if plugin configuration has been provided for a given key, e.g.
 
     do { ... } if $store->has_dynamic_config_for('version.first');
+
+This is a read-only accessor to the L</dynamic_config> attribute.
 
 =cut
 
@@ -100,19 +105,27 @@ specified herein override those in the L</default_config>, and anything
 returned by a plugin (aka L</dynamic_config>) similarly overrides anything
 here.
 
+This is a read-only accessor to the L</static_config> attribute.
+
 =method static_config
 
 A read-only accessor to the static_config attribute.
 
+This is a read-only accessor to the L</static_config> attribute.
+
 =method has_static_config
 
 True if we have been provided any static configuration.
+
+This is a read-only accessor to the L</static_config> attribute.
 
 =method has_static_config_for
 
 True if static configuration has been provided for a given key, e.g.
 
     do { ... } if $store->has_static_config_for('version.first');
+
+This is a read-only accessor to the L</static_config> attribute.
 
 =cut
 
@@ -128,6 +141,49 @@ has static_config => (
         # ...
     },
 );
+
+=attr config
+
+This attribute contains a HashRef of all the known configuration values, from
+all sources (default, stash and plugins aka dynamic).  It merges the
+L</dynamic_config> into L</static_config>, and that result into
+L</default_config>, each time giving the hash being merged precedence.
+
+If you're looking for "The Right Place to Find Configuration Values", this is
+it. :)
+
+=method config
+
+A read-only accessor returning the config HashRef.
+
+This is a read-only accessor to the L</config> attribute.
+
+=method has_config
+
+True if we have any configuration stored; false if not.
+
+This is a read-only accessor to the L</config> attribute.
+
+=method has_no_config
+
+The inverse of L</has_config>.
+
+This is a read-only accessor to the L</config> attribute.
+
+=method has_config_for($key)
+
+Returns true if we have configuration information for a given key.
+
+This is a read-only accessor to the L</config> attribute.
+
+=method get_config_for($key)
+
+Returns the value we have for a given key; returns C<undef> if we have no
+configuration information for that key.
+
+This is a read-only accessor to the L</config> attribute.
+
+=cut
 
 has config => (
     traits  => [ 'Hash' ],
@@ -170,12 +226,29 @@ has _repo => (
     builder         => sub { Git::Wrapper->new(shift->repo_root) },
 );
 
-# FIXME
+=attr repo_root
+
+Stores the repository root; by default this is the current directory.
+
+=method repo_root
+
+Returns the path to the repository root; this may be a relative path.
+
+This is a read-only accessor to the L</repo_root> attribute.
+
+=cut
+
 has repo_root => (is => 'lazy', builder => sub { '.' });
 
-# XXX
-#has version_regexp => (is => 'rwp', isa=>'Str', lazy => 1, predicate => 1, builder => sub { '^v(.+)$' });
-#has first_version  => (is => 'rwp', isa=>'Str', lazy => 1, predicate => 1, default => sub { '0.001' });
+=attr tags
+
+An ArrayRef of all existing tags in the repository.
+
+=method tags
+
+A read-only accessor to the L</tags> attribute.
+
+=cut
 
 has tags => (
     is      => 'lazy',
@@ -183,6 +256,37 @@ has tags => (
     # For win32, natch
     builder => sub { local $/ = "\n"; [ shift->_repo->tag ] },
 );
+
+=attr previous_versions
+
+A sorted ArrayRef of all previous versions of this distribution, as derived
+from the repository tags filtered through the regular expression given in the
+C<version.regexp>.
+
+=method previous_versions
+
+A read-only accessor to the L</previous_versions> attribute.
+
+=method has_previous_versions
+
+True if this distribution has any previous versions; that is, if any git tags
+match the version regular expression.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
+=method earliest_version
+
+Returns the earliest version known; C<undef> if no such version exists.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
+=method latest_version
+
+Returns the latest version known; C<undef> if no such version exists.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
+=cut
 
 has previous_versions => (
 
@@ -193,9 +297,8 @@ has previous_versions => (
     handles => {
 
         has_previous_versions => 'count',
-        #previous_versions     => 'elements',
         earliest_version      => [ get =>  0 ],
-        last_version          => [ get => -1 ],
+        latest_version        => [ get => -1 ],
     },
 
     builder => sub {
@@ -241,10 +344,18 @@ __PACKAGE__->meta->make_immutable;
 !!42;
 __END__
 
+=for :stopwords versioning
+
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
+This is a L<Dist::Zilla Store|Dist::Zilla::Role::Store> providing a common place to
+store, fetch and share configuration information as to your distribution's git repository,
+as well as your own preferences (e.g. git tag versioning scheme).
+
 =head1 SEE ALSO
+
+Dist::Zilla::Role::Store
 
 =cut
