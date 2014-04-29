@@ -29,6 +29,22 @@ around stash_from_config => sub {
     return $class->$orig($name, $args, $section);
 };
 
+=method default_config
+
+This method provides a HashRef of all the default settings we know about.  At the moment,
+this is:
+
+    version.regexp => '^v(.+)$'
+    version.first  => '0.001'
+
+You should never need to mess with this -- note that L</static_config> (values
+passed to the store via configuration) and L</plugin_config> (values returned
+by the plugins performing the
+L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
+respectively, override this.
+
+=cut
+
 sub default_config {
     my $self = shift @_;
 
@@ -37,6 +53,30 @@ sub default_config {
         'version.first'  => '0.001',
     };
 }
+
+=attr static_config
+
+This attribute contains all the information passed to the store via the
+store's configuration, e.g. in the distribution's C<dist.ini>.  Any values
+specified herein override those in the L</default_config>, and anything
+returned by a plugin (aka L</plugin_config>) similarly overrides anything
+here.
+
+=method static_config
+
+A read-only accessor to the static_config attribute.
+
+=method has_static_config
+
+True if we have been provided any static configuration.
+
+=method has_static_config_for
+
+True if static configuration has been provided for a given key, e.g.
+
+    do { ... } if $store->has_static_config_for('version.first');
+
+=cut
 
 has static_config => (
     traits  => [ 'Hash' ],
