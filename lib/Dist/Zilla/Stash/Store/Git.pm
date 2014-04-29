@@ -25,7 +25,7 @@ around stash_from_config => sub {
     my ($orig, $class) = (shift, shift);
     my ($name, $args, $section) = @_;
 
-    $args = { _zilla => delete $args->{_zilla}, static_config => $args };
+    $args = { _zilla => delete $args->{_zilla}, store_config => $args };
     return $class->$orig($name, $args, $section);
 };
 
@@ -37,7 +37,7 @@ this is:
     version.regexp => '^v(.+)$'
     version.first  => '0.001'
 
-You should never need to mess with this -- note that L</static_config> (values
+You should never need to mess with this -- note that L</store_config> (values
 passed to the store via configuration) and L</dynamic_config> (values returned
 by the plugins performing the
 L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
@@ -97,7 +97,7 @@ has dynamic_config => (
     },
 );
 
-=attr static_config
+=attr store_config
 
 This attribute contains all the information passed to the store via the
 store's configuration, e.g. in the distribution's C<dist.ini>.  Any values
@@ -105,39 +105,39 @@ specified herein override those in the L</default_config>, and anything
 returned by a plugin (aka L</dynamic_config>) similarly overrides anything
 here.
 
-This is a read-only accessor to the L</static_config> attribute.
+This is a read-only accessor to the L</store_config> attribute.
 
-=method static_config
+=method store_config
 
-A read-only accessor to the static_config attribute.
+A read-only accessor to the store_config attribute.
 
-This is a read-only accessor to the L</static_config> attribute.
+This is a read-only accessor to the L</store_config> attribute.
 
-=method has_static_config
+=method has_store_config
 
 True if we have been provided any static configuration.
 
-This is a read-only accessor to the L</static_config> attribute.
+This is a read-only accessor to the L</store_config> attribute.
 
-=method has_static_config_for
+=method has_store_config_for
 
 True if static configuration has been provided for a given key, e.g.
 
-    do { ... } if $store->has_static_config_for('version.first');
+    do { ... } if $store->has_store_config_for('version.first');
 
-This is a read-only accessor to the L</static_config> attribute.
+This is a read-only accessor to the L</store_config> attribute.
 
 =cut
 
-has static_config => (
+has store_config => (
     traits  => [ 'Hash' ],
     is      => 'lazy',
     isa     => 'HashRef',
     builder => sub { { } },
     handles => {
-        has_static_config     => 'count',
-        has_no_static_config  => 'is_empty', # XXX ?
-        has_static_config_for => 'exists',
+        has_store_config     => 'count',
+        has_no_store_config  => 'is_empty', # XXX ?
+        has_store_config_for => 'exists',
         # ...
     },
 );
@@ -146,7 +146,7 @@ has static_config => (
 
 This attribute contains a HashRef of all the known configuration values, from
 all sources (default, stash and plugins aka dynamic).  It merges the
-L</dynamic_config> into L</static_config>, and that result into
+L</dynamic_config> into L</store_config>, and that result into
 L</default_config>, each time giving the hash being merged precedence.
 
 If you're looking for "The Right Place to Find Configuration Values", this is
@@ -212,7 +212,7 @@ has config => (
         my $config = merge
             $self->default_config,
             $self->dynamic_config,
-            $self->static_config,
+            $self->store_config,
             ;
 
         return $config;
