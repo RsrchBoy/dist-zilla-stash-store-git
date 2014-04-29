@@ -38,7 +38,7 @@ this is:
     version.first  => '0.001'
 
 You should never need to mess with this -- note that L</static_config> (values
-passed to the store via configuration) and L</plugin_config> (values returned
+passed to the store via configuration) and L</dynamic_config> (values returned
 by the plugins performing the
 L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
 respectively, override this.
@@ -54,7 +54,7 @@ sub default_config {
     };
 }
 
-=attr plugin_config
+=attr dynamic_config
 
 This attribute contains all the configuration information provided to the
 store by the plugins performing the
@@ -63,31 +63,31 @@ Any values specified herein override those in the L</default_config>, and
 anything set by the store configuration (aka L</store_config>) similarly
 overrides anything here.
 
-=method plugin_config
+=method dynamic_config
 
-A read-only accessor to the plugin_config attribute.
+A read-only accessor to the dynamic_config attribute.
 
-=method has_plugin_config
+=method has_dynamic_config
 
 True if we have been provided any plugin configuration.
 
-=method has_plugin_config_for
+=method has_dynamic_config_for
 
 True if plugin configuration has been provided for a given key, e.g.
 
-    do { ... } if $store->has_plugin_config_for('version.first');
+    do { ... } if $store->has_dynamic_config_for('version.first');
 
 =cut
 
-has plugin_config => (
+has dynamic_config => (
     traits  => [ 'Hash' ],
     is      => 'lazy',
     isa     => 'HashRef',
     builder => sub { { } },
     handles => {
-        has_plugin_config     => 'count',
-        has_no_plugin_config  => 'is_empty', # XXX ?
-        has_plugin_config_for => 'exists',
+        has_dynamic_config     => 'count',
+        has_no_dynamic_config  => 'is_empty', # XXX ?
+        has_dynamic_config_for => 'exists',
         # ...
     },
 );
@@ -97,7 +97,7 @@ has plugin_config => (
 This attribute contains all the information passed to the store via the
 store's configuration, e.g. in the distribution's C<dist.ini>.  Any values
 specified herein override those in the L</default_config>, and anything
-returned by a plugin (aka L</plugin_config>) similarly overrides anything
+returned by a plugin (aka L</dynamic_config>) similarly overrides anything
 here.
 
 =method static_config
@@ -159,7 +159,7 @@ has config => (
         ### ...and the default config...
 
         ### merge it all..
-        my $config = merge $self->default_config, $self->static_config; # XXX $self->plugin_config
+        my $config = merge $self->default_config, $self->static_config; # XXX $self->dynamic_config
 
         return $config;
     },
