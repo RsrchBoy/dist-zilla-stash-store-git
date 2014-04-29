@@ -6,6 +6,9 @@ use Moose::Role;
 use namespace::autoclean;
 use MooseX::AttributeShortcuts;
 
+# TODO not quite yet...
+#with 'Dist::Zilla::Role::RegisterStash';
+
 has _git_store => (
     is              => 'lazy',
     isa_instance_of => 'Dist::Zilla::Stash::Store::Git',
