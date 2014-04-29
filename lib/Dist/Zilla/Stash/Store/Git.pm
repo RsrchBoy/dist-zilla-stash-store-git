@@ -152,20 +152,16 @@ has config => (
     builder => sub {
         my $self = shift @_;
 
-        ### pull in configuration from plugins...
-
-        ### pull in static config...
-
-        ### ...and the default config...
-
-        ### merge it all..
-        my $config = merge $self->default_config, $self->static_config; # XXX $self->dynamic_config
+        ### merge all our different config sources..
+        my $config = merge
+            $self->default_config,
+            $self->dynamic_config,
+            $self->static_config,
+            ;
 
         return $config;
     },
 );
-
-    #'Dist::Zilla::Role::Git::Repo',
 
 # XXX ?
 has _repo => (
@@ -223,7 +219,7 @@ has previous_versions => (
 # XXX should this be here as default logic?  or should we require that a
 # plugin supply this information to us?
 
-sub _XXX_default_next_version {
+sub _default_next_version {
     my $self = shift @_;
 
     # override (or maybe needed to initialize)
