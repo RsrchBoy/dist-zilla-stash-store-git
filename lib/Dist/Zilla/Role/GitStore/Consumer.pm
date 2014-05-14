@@ -6,13 +6,35 @@ use Moose::Role;
 use namespace::autoclean;
 use MooseX::AttributeShortcuts;
 
-# TODO not quite yet...
-#with 'Dist::Zilla::Role::RegisterStash';
+use aliased 'Dist::Zilla::Stash::Store::Git' => 'StoreGit';
+
+with 'Dist::Zilla::Role::RegisterStash';
+
+=attr _git_store
+
+A lazy attribute to fetch -- or create -- our
+L<%Store::Git|Dist::Zilla::Stash::Store::Git>.
+
+=method _git_store
+
+A read only accessor to the _git_store attribute.
+
+=cut
 
 has _git_store => (
     is              => 'lazy',
     isa_instance_of => 'Dist::Zilla::Stash::Store::Git',
-    builder         => sub { shift->zilla->stash_named('%Store::Git') },
+    builder         => sub {
+        my $self = shift @_;
+
+        my $store = $self->zilla->stash_named('%Store::Git');
+        return $store
+            if $store;
+
+        $store = StoreGit->new();
+        $self->_register_stash('%Store::Git' => $store);
+        return $store;
+    },
 );
 
 !!42;
