@@ -21,6 +21,14 @@ with 'Dist::Zilla::Role::Store';
 # Dist::Zilla::Role::GitStore::ConfigConsumer
 # Dist::Zilla::Role::GitStore::Consumer
 
+=method stash_from_config()
+
+This method wraps L<Dist::Zilla::Role::Stash/stash_from_config> to capture our
+L<Dist::Zilla> instance and funnel all our stash configuration options into
+the L</store_config> attribute.
+
+=cut
+
 around stash_from_config => sub {
     my ($orig, $class) = (shift, shift);
     my ($name, $args, $section) = @_;
