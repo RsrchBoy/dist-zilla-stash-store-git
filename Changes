@@ -2,6 +2,12 @@ Revision history for Dist-Zilla-Stash-Store-Git
 
 {{$NEXT}}
 
+0.000004  2014-05-14 12:59:19 PDT-0700
+	* first non-TRIAL release!  ...though to call us TRIAL is to be, well, overly
+	  kind.
+	* _git_store's builder method in our consumer role now uses the
+	  RegisterStash role's _retrieve_or_register() method
+
 0.000003-TRIAL  2014-05-14 01:08:56 PDT-0700
 	* _git_store in our consumer role now creates the store if needs be
 
