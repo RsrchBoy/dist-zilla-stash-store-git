@@ -1,3 +1,4 @@
+requires "Dist::Zilla::Role::RegisterStash" => "0";
 requires "Dist::Zilla::Role::Store" => "0";
 requires "Git::Wrapper" => "0";
 requires "Hash::Merge::Simple" => "0";
@@ -5,6 +6,7 @@ requires "Moose" => "0";
 requires "Moose::Role" => "0";
 requires "MooseX::AttributeShortcuts" => "0";
 requires "Version::Next" => "0";
+requires "aliased" => "0";
 requires "autobox::Core" => "0";
 requires "namespace::autoclean" => "0";
 requires "perl" => "5.006";
