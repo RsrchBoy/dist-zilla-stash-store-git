@@ -160,7 +160,7 @@ L</default_config>, each time giving the hash being merged precedence.
 If you're looking for "The Right Place to Find Configuration Values", this is
 it. :)
 
-=method config
+=method config()
 
 A read-only accessor returning the config HashRef.
 
@@ -197,7 +197,7 @@ has config => (
     traits  => [ 'Hash' ],
     is      => 'lazy',
     isa     => 'HashRef',
-    clearer => -1,
+    clearer => -1, # private
 
     handles => {
         has_config     => 'count',
@@ -252,7 +252,7 @@ has repo_root => (is => 'lazy', builder => sub { '.' });
 
 An ArrayRef of all existing tags in the repository.
 
-=method tags
+=method tags()
 
 A read-only accessor to the L</tags> attribute.
 
@@ -271,7 +271,7 @@ A sorted ArrayRef of all previous versions of this distribution, as derived
 from the repository tags filtered through the regular expression given in the
 C<version.regexp>.
 
-=method previous_versions
+=method previous_versions()
 
 A read-only accessor to the L</previous_versions> attribute.
 
@@ -365,5 +365,6 @@ as well as your own preferences (e.g. git tag versioning scheme).
 =head1 SEE ALSO
 
 Dist::Zilla::Role::Store
+Dist::Zilla::Role::Stash
 
 =cut
