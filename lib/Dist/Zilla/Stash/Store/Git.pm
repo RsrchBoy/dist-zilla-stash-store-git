@@ -16,12 +16,6 @@ use Hash::Merge::Simple 'merge';
 
 with 'Dist::Zilla::Role::Store';
 
-# TODO Additonal plugin roles:
-#
-# Dist::Zilla::Role::GitStore::ConfigProvider
-# Dist::Zilla::Role::GitStore::ConfigConsumer
-# Dist::Zilla::Role::GitStore::Consumer
-
 =method stash_from_config()
 
 This method wraps L<Dist::Zilla::Role::Stash/stash_from_config> to capture our
@@ -392,6 +386,17 @@ __END__
 This is a L<Dist::Zilla Store|Dist::Zilla::Role::Store> providing a common place to
 store, fetch and share configuration information as to your distribution's git repository,
 as well as your own preferences (e.g. git tag versioning scheme).
+
+=head1 ATCHUNG!
+
+B<This is VERY EARLY CODE UNDER ACTIVE DEVELOPMENT!  It's being used by L<this
+author's plugin bundle|Dist::Zilla::PluginBundle::RSRCHBOY>, and as such is
+being released as a non-TRIAL / non-development (e.g. x.xxx_01) release to
+make that easier.  The interface is likely to change.  Stability (as it is)
+should be expected when this section is removed and the version >= 0.001 (aka
+0.001000).
+
+Contributions, issues and the like are welcome and encouraged.
 
 =head1 SEE ALSO
 
