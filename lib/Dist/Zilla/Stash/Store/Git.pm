@@ -377,7 +377,7 @@ __PACKAGE__->meta->make_immutable;
 !!42;
 __END__
 
-=for :stopwords versioning
+=for :stopwords versioning ATCHUNG
 
 =head1 SYNOPSIS
 
