@@ -91,7 +91,17 @@ has dynamic_config => (
     traits  => [ 'Hash' ],
     is      => 'lazy',
     isa     => 'HashRef',
-    builder => sub { { } },
+    builder => sub {
+        my $self = shift @_;
+
+        my @config =
+            map { $_->gitstore_config_provided }
+            $self->_dzil->plugins_with('-GitStore::ConfigProvider')->flatten
+            ;
+
+        ### @config
+        return \@config;
+    },
     handles => {
         has_dynamic_config     => 'count',
         has_no_dynamic_config  => 'is_empty', # XXX ?
