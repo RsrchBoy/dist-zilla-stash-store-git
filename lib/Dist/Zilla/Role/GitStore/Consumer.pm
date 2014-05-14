@@ -19,7 +19,7 @@ L<%Store::Git|Dist::Zilla::Stash::Store::Git>.
 
 =method _git_store()
 
-A read only accessor to the _git_store attribute.
+A read only accessor to the L</_git_store> attribute.
 
 =cut
 
@@ -46,7 +46,13 @@ L<%Store::Git stash|Dist::Zilla::Stash::Store::Git>.
 
 Note that this role does not indicate that B<configuration information> is
 being consumed; simply that the consumer uses the store in some way (e.g.
-looking up all tags, querying the repository log, etc).
+looking up all tags, querying the repository log, etc.).
+
+=head2 Private Methods?
+
+Note that the methods this role provides are all private, as we expect only
+the consumer of this role to use them.  (That is, these methods are not
+anticipated to be part of the public interface of any consuming plugin/etc.)
 
 =head1 SEE ALSO
 
