@@ -1,7 +1,5 @@
 Revision history for Dist-Zilla-Stash-Store-Git
 
-{{$NEXT}}
-
 0.000003-TRIAL  2014-05-14 01:08:56 PDT-0700
 	* _git_store in our consumer role now creates the store if needs be
 

@@ -1,4 +1,18 @@
+#
+# This file is part of Dist-Zilla-Stash-Store-Git
+#
+# This software is Copyright (c) 2014 by Chris Weyl.
+#
+# This is free software, licensed under:
+#
+#   The GNU Lesser General Public License, Version 2.1, February 1999
+#
 package Dist::Zilla::Stash::Store::Git;
+BEGIN {
+  $Dist::Zilla::Stash::Store::Git::AUTHORITY = 'cpan:RSRCHBOY';
+}
+# git description: 0.000002-1-g041a01d
+$Dist::Zilla::Stash::Store::Git::VERSION = '0.000003'; # TRIAL
 
 # ABSTRACT: A common place to store and interface with git
 
@@ -29,21 +43,6 @@ around stash_from_config => sub {
     return $class->$orig($name, $args, $section);
 };
 
-=method default_config
-
-This method provides a HashRef of all the default settings we know about.  At the moment,
-this is:
-
-    version.regexp => '^v(.+)$'
-    version.first  => '0.001'
-
-You should never need to mess with this -- note that L</store_config> (values
-passed to the store via configuration) and L</dynamic_config> (values returned
-by the plugins performing the
-L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
-respectively, override this.
-
-=cut
 
 sub default_config {
     my $self = shift @_;
@@ -55,34 +54,6 @@ sub default_config {
     };
 }
 
-=attr dynamic_config
-
-This attribute contains all the configuration information provided to the
-store by the plugins performing the
-L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>.
-Any values specified herein override those in the L</default_config>, and
-anything set by the store configuration (aka L</store_config>) similarly
-overrides anything here.
-
-=method dynamic_config
-
-This is a read-only accessor to the L</dynamic_config> attribute.
-
-=method has_dynamic_config
-
-True if we have been provided any configuration by plugins.
-
-This is a read-only accessor to the L</dynamic_config> attribute.
-
-=method has_dynamic_config_for
-
-True if plugin configuration has been provided for a given key, e.g.
-
-    do { ... } if $store->has_dynamic_config_for('version.first');
-
-This is a read-only accessor to the L</dynamic_config> attribute.
-
-=cut
 
 has dynamic_config => (
     traits  => [ 'Hash' ],
@@ -97,37 +68,6 @@ has dynamic_config => (
     },
 );
 
-=attr store_config
-
-This attribute contains all the information passed to the store via the
-store's configuration, e.g. in the distribution's C<dist.ini>.  Any values
-specified herein override those in the L</default_config>, and anything
-returned by a plugin (aka L</dynamic_config>) similarly overrides anything
-here.
-
-This is a read-only accessor to the L</store_config> attribute.
-
-=method store_config
-
-A read-only accessor to the store_config attribute.
-
-This is a read-only accessor to the L</store_config> attribute.
-
-=method has_store_config
-
-True if we have been provided any static configuration.
-
-This is a read-only accessor to the L</store_config> attribute.
-
-=method has_store_config_for
-
-True if static configuration has been provided for a given key, e.g.
-
-    do { ... } if $store->has_store_config_for('version.first');
-
-This is a read-only accessor to the L</store_config> attribute.
-
-=cut
 
 has store_config => (
     traits  => [ 'Hash' ],
@@ -142,48 +82,6 @@ has store_config => (
     },
 );
 
-=attr config
-
-This attribute contains a HashRef of all the known configuration values, from
-all sources (default, stash and plugins aka dynamic).  It merges the
-L</dynamic_config> into L</store_config>, and that result into
-L</default_config>, each time giving the hash being merged precedence.
-
-If you're looking for "The Right Place to Find Configuration Values", this is
-it. :)
-
-=method config
-
-A read-only accessor returning the config HashRef.
-
-This is a read-only accessor to the L</config> attribute.
-
-=method has_config
-
-True if we have any configuration stored; false if not.
-
-This is a read-only accessor to the L</config> attribute.
-
-=method has_no_config
-
-The inverse of L</has_config>.
-
-This is a read-only accessor to the L</config> attribute.
-
-=method has_config_for($key)
-
-Returns true if we have configuration information for a given key.
-
-This is a read-only accessor to the L</config> attribute.
-
-=method get_config_for($key)
-
-Returns the value we have for a given key; returns C<undef> if we have no
-configuration information for that key.
-
-This is a read-only accessor to the L</config> attribute.
-
-=cut
 
 has config => (
     traits  => [ 'Hash' ],
@@ -226,29 +124,9 @@ has _repo => (
     builder         => sub { Git::Wrapper->new(shift->repo_root) },
 );
 
-=attr repo_root
-
-Stores the repository root; by default this is the current directory.
-
-=method repo_root
-
-Returns the path to the repository root; this may be a relative path.
-
-This is a read-only accessor to the L</repo_root> attribute.
-
-=cut
 
 has repo_root => (is => 'lazy', builder => sub { '.' });
 
-=attr tags
-
-An ArrayRef of all existing tags in the repository.
-
-=method tags
-
-A read-only accessor to the L</tags> attribute.
-
-=cut
 
 has tags => (
     is      => 'lazy',
@@ -257,36 +135,6 @@ has tags => (
     builder => sub { local $/ = "\n"; [ shift->_repo->tag ] },
 );
 
-=attr previous_versions
-
-A sorted ArrayRef of all previous versions of this distribution, as derived
-from the repository tags filtered through the regular expression given in the
-C<version.regexp>.
-
-=method previous_versions
-
-A read-only accessor to the L</previous_versions> attribute.
-
-=method has_previous_versions
-
-True if this distribution has any previous versions; that is, if any git tags
-match the version regular expression.
-
-This is a read-only accessor to the L</previous_versions> attribute.
-
-=method earliest_version
-
-Returns the earliest version known; C<undef> if no such version exists.
-
-This is a read-only accessor to the L</previous_versions> attribute.
-
-=method latest_version
-
-Returns the latest version known; C<undef> if no such version exists.
-
-This is a read-only accessor to the L</previous_versions> attribute.
-
-=cut
 
 has previous_versions => (
 
@@ -342,9 +190,24 @@ sub _default_next_version {
 
 __PACKAGE__->meta->make_immutable;
 !!42;
+
 __END__
 
-=for :stopwords versioning
+=pod
+
+=encoding UTF-8
+
+=for :stopwords Chris Weyl versioning
+
+=for :stopwords Wishlist flattr flattr'ed gittip gittip'ed
+
+=head1 NAME
+
+Dist::Zilla::Stash::Store::Git - A common place to store and interface with git
+
+=head1 VERSION
+
+This document describes version 0.000003 of Dist::Zilla::Stash::Store::Git - released May 14, 2014 as part of Dist-Zilla-Stash-Store-Git.
 
 =head1 SYNOPSIS
 
@@ -354,8 +217,224 @@ This is a L<Dist::Zilla Store|Dist::Zilla::Role::Store> providing a common place
 store, fetch and share configuration information as to your distribution's git repository,
 as well as your own preferences (e.g. git tag versioning scheme).
 
+=head1 ATTRIBUTES
+
+=head2 dynamic_config
+
+This attribute contains all the configuration information provided to the
+store by the plugins performing the
+L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>.
+Any values specified herein override those in the L</default_config>, and
+anything set by the store configuration (aka L</store_config>) similarly
+overrides anything here.
+
+=head2 store_config
+
+This attribute contains all the information passed to the store via the
+store's configuration, e.g. in the distribution's C<dist.ini>.  Any values
+specified herein override those in the L</default_config>, and anything
+returned by a plugin (aka L</dynamic_config>) similarly overrides anything
+here.
+
+This is a read-only accessor to the L</store_config> attribute.
+
+=head2 config
+
+This attribute contains a HashRef of all the known configuration values, from
+all sources (default, stash and plugins aka dynamic).  It merges the
+L</dynamic_config> into L</store_config>, and that result into
+L</default_config>, each time giving the hash being merged precedence.
+
+If you're looking for "The Right Place to Find Configuration Values", this is
+it. :)
+
+=head2 repo_root
+
+Stores the repository root; by default this is the current directory.
+
+=head2 tags
+
+An ArrayRef of all existing tags in the repository.
+
+=head2 previous_versions
+
+A sorted ArrayRef of all previous versions of this distribution, as derived
+from the repository tags filtered through the regular expression given in the
+C<version.regexp>.
+
+=head1 METHODS
+
+=head2 default_config
+
+This method provides a HashRef of all the default settings we know about.  At the moment,
+this is:
+
+    version.regexp => '^v(.+)$'
+    version.first  => '0.001'
+
+You should never need to mess with this -- note that L</store_config> (values
+passed to the store via configuration) and L</dynamic_config> (values returned
+by the plugins performing the
+L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
+respectively, override this.
+
+=head2 dynamic_config
+
+This is a read-only accessor to the L</dynamic_config> attribute.
+
+=head2 has_dynamic_config
+
+True if we have been provided any configuration by plugins.
+
+This is a read-only accessor to the L</dynamic_config> attribute.
+
+=head2 has_dynamic_config_for
+
+True if plugin configuration has been provided for a given key, e.g.
+
+    do { ... } if $store->has_dynamic_config_for('version.first');
+
+This is a read-only accessor to the L</dynamic_config> attribute.
+
+=head2 store_config
+
+A read-only accessor to the store_config attribute.
+
+This is a read-only accessor to the L</store_config> attribute.
+
+=head2 has_store_config
+
+True if we have been provided any static configuration.
+
+This is a read-only accessor to the L</store_config> attribute.
+
+=head2 has_store_config_for
+
+True if static configuration has been provided for a given key, e.g.
+
+    do { ... } if $store->has_store_config_for('version.first');
+
+This is a read-only accessor to the L</store_config> attribute.
+
+=head2 config
+
+A read-only accessor returning the config HashRef.
+
+This is a read-only accessor to the L</config> attribute.
+
+=head2 has_config
+
+True if we have any configuration stored; false if not.
+
+This is a read-only accessor to the L</config> attribute.
+
+=head2 has_no_config
+
+The inverse of L</has_config>.
+
+This is a read-only accessor to the L</config> attribute.
+
+=head2 has_config_for($key)
+
+Returns true if we have configuration information for a given key.
+
+This is a read-only accessor to the L</config> attribute.
+
+=head2 get_config_for($key)
+
+Returns the value we have for a given key; returns C<undef> if we have no
+configuration information for that key.
+
+This is a read-only accessor to the L</config> attribute.
+
+=head2 repo_root
+
+Returns the path to the repository root; this may be a relative path.
+
+This is a read-only accessor to the L</repo_root> attribute.
+
+=head2 tags
+
+A read-only accessor to the L</tags> attribute.
+
+=head2 previous_versions
+
+A read-only accessor to the L</previous_versions> attribute.
+
+=head2 has_previous_versions
+
+True if this distribution has any previous versions; that is, if any git tags
+match the version regular expression.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
+=head2 earliest_version
+
+Returns the earliest version known; C<undef> if no such version exists.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
+=head2 latest_version
+
+Returns the latest version known; C<undef> if no such version exists.
+
+This is a read-only accessor to the L</previous_versions> attribute.
+
 =head1 SEE ALSO
 
-Dist::Zilla::Role::Store
+Please see those modules/websites for more information related to this module.
+
+=over 4
+
+=item *
+
+L<Dist::Zilla::Role::Store|Dist::Zilla::Role::Store>
+
+=back
+
+=head1 SOURCE
+
+The development version is on github at L<http://https://github.com/RsrchBoy/dist-zilla-stash-store-git>
+and may be cloned from L<git://https://github.com/RsrchBoy/dist-zilla-stash-store-git.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+https://github.com/RsrchBoy/dist-zilla-stash-store-git/issues
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 AUTHOR
+
+Chris Weyl <cweyl@alumni.drew.edu>
+
+=head2 I'm a material boy in a material world
+
+=begin html
+
+<a href="https://www.gittip.com/RsrchBoy/"><img src="https://raw.githubusercontent.com/gittip/www.gittip.com/master/www/assets/%25version/logo.png" /></a>
+<a href="http://bit.ly/rsrchboys-wishlist"><img src="http://wps.io/wp-content/uploads/2014/05/amazon_wishlist.resized.png" /></a>
+<a href="https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2Fdist-zilla-stash-store-git&title=RsrchBoy's%20CPAN%20Dist-Zilla-Stash-Store-Git&tags=%22RsrchBoy's%20Dist-Zilla-Stash-Store-Git%20in%20the%20CPAN%22"><img src="http://api.flattr.com/button/flattr-badge-large.png" /></a>
+
+=end html
+
+Please note B<I do not expect to be gittip'ed or flattr'ed for this work>,
+rather B<it is simply a very pleasant surprise>. I largely create and release
+works like this because I need them or I find it enjoyable; however, don't let
+that stop you if you feel like it ;)
+
+L<Flattr this|https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2Fdist-zilla-stash-store-git&title=RsrchBoy's%20CPAN%20Dist-Zilla-Stash-Store-Git&tags=%22RsrchBoy's%20Dist-Zilla-Stash-Store-Git%20in%20the%20CPAN%22>,
+L<gittip me|https://www.gittip.com/RsrchBoy/>, or indulge my
+L<Amazon Wishlist|http://bit.ly/rsrchboys-wishlist>...  If you so desire.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2014 by Chris Weyl.
+
+This is free software, licensed under:
+
+  The GNU Lesser General Public License, Version 2.1, February 1999
 
 =cut
