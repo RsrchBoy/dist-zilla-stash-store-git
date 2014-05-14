@@ -5,6 +5,7 @@ package Dist::Zilla::Stash::Store::Git;
 use Moose;
 use namespace::autoclean;
 use MooseX::AttributeShortcuts;
+use MooseX::RelatedClasses;
 
 use autobox::Core;
 use version;
@@ -227,11 +228,41 @@ has config => (
     },
 );
 
-# XXX ?
-has _repo => (
+=attr repo_wrapper
+
+Contains a lazily-constructed L<Git::Wrapper> instance for our repository.
+
+=method repo_wrapper()
+
+This is a read-only accessor to the L</repo_wrapper> attribute.
+
+=cut
+
+related_class 'Git::Wrapper';
+
+has repo_wrapper => (
     is              => 'lazy',
     isa_instance_of => 'Git::Wrapper',
-    builder         => sub { Git::Wrapper->new(shift->repo_root) },
+    builder         => sub { $_[0]->git__wrapper_class->new($_[0]->repo_root) },
+);
+
+=attr repo_raw
+
+Contains a lazily-constructed L<Git::Raw::Repository> instance for our
+repository.
+
+=method repo_raw()
+
+This is a read-only accessor to the L</repo_raw> attribute.
+
+=cut
+
+related_class 'Git::Raw::Repository';
+
+has repo_raw => (
+    is              => 'lazy',
+    isa_instance_of => 'Git::Raw::Repository',
+    builder         => sub { $_[0]->git__raw__repository_class->open($_[0]->repo_root) },
 );
 
 =attr repo_root
@@ -262,7 +293,7 @@ has tags => (
     is      => 'lazy',
     isa     => 'ArrayRef[Str]',
     # For win32, natch
-    builder => sub { local $/ = "\n"; [ shift->_repo->tag ] },
+    builder => sub { local $/ = "\n"; [ shift->repo_wrapper->tag ] },
 );
 
 =attr previous_versions
