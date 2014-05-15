@@ -1,7 +1,5 @@
 Revision history for Dist-Zilla-Stash-Store-Git
 
-{{$NEXT}}
-
 0.000005  2014-05-14 20:26:38 PDT-0700
 	* Make dynamic_config's builder... dynamic
 
