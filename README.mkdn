@@ -4,7 +4,7 @@ Dist::Zilla::Stash::Store::Git - A common place to store and interface with git
 
 # VERSION
 
-This document describes version 0.000004 of Dist::Zilla::Stash::Store::Git - released May 14, 2014 as part of Dist-Zilla-Stash-Store-Git.
+This document describes version 0.000005 of Dist::Zilla::Stash::Store::Git - released May 14, 2014 as part of Dist-Zilla-Stash-Store-Git.
 
 # SYNOPSIS
 
