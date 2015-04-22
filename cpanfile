@@ -27,12 +27,15 @@ on 'test' => sub {
 };
 
 on 'configure' => sub {
-  requires "ExtUtils::MakeMaker" => "6.30";
+  requires "ExtUtils::MakeMaker" => "0";
+  requires "perl" => "5.006";
 };
 
 on 'develop' => sub {
-  requires "Test::More" => "0";
+  requires "Test::EOL" => "0";
+  requires "Test::More" => "0.88";
   requires "Test::NoTabs" => "0";
   requires "Test::Pod" => "1.41";
+  requires "Test::Spelling" => "0.12";
   requires "version" => "0.9901";
 };
