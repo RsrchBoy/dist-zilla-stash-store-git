@@ -43,7 +43,7 @@ this is:
 You should never need to mess with this -- note that L</store_config> (values
 passed to the store via configuration) and L</dynamic_config> (values returned
 by the plugins performing the
-L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>),
+L<GitStore::ConfigProvider role|Dist::Zilla::Role::GitStore::ConfigProvider>)
 respectively, override this.
 
 =cut
@@ -62,7 +62,7 @@ sub default_config {
 
 This attribute contains all the configuration information provided to the
 store by the plugins performing the
-L<Dist::Zilla::Role::GitStore::ConfigProvider|GitStore::ConfigProvider role>.
+L<GitStore::ConfigProvider role|Dist::Zilla::Role::GitStore::ConfigProvider>.
 Any values specified herein override those in the L</default_config>, and
 anything set by the store configuration (aka L</store_config>) similarly
 overrides anything here.
